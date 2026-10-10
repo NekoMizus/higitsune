@@ -1,0 +1,2315 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#fff7fb">
+		<title>Higitsune</title>
+
+		<!--
+			Everything is in this one file: HTML + CSS + vanilla JavaScript.
+			To add shortcuts, copy a .shortcut block in a category below.
+			To add categories, copy a .group section inside main.board.
+			Keep your original img/ folder beside this HTML file.
+		-->
+		<style>
+			/*
+			 * Higitsune — all styles are local to this file.
+			 *
+			 * Each selector is defined in one place, grouped by purpose.
+			 * The responsive adjustments are below the normal styles.
+			 */
+
+			/* ─── 1. Theme colors & page background ─── */
+			:root {
+				color-scheme: light;
+				--background: #fff9f4;
+				--text: #594966;
+				--muted: #97849f;
+				--focus: #965c9e;
+			}
+
+			*, *::before, *::after {
+				box-sizing: border-box;
+			}
+
+			html {
+				min-height: 100%;
+			}
+
+			body {
+				min-width: 320px;
+				min-height: 100dvh;
+				margin: 0;
+				color: var(--text);
+				-webkit-font-smoothing: antialiased;
+				font-family: "Trebuchet MS", "Arial Rounded MT Bold", ui-rounded, system-ui, sans-serif;
+				background: radial-gradient(circle at 3% 3%, #ffe0e8 0, transparent 30%),
+					radial-gradient(circle at 92% 5%, #e8dbff 0, transparent 34%),
+					radial-gradient(circle at 96% 94%, #d8f6e8 0, transparent 34%),
+					radial-gradient(circle at 0% 93%, #ffefca 0, transparent 28%),
+					#fffaf7;
+			}
+
+			body::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: 0;
+				opacity: .30;
+				mask-image: none;
+				background-image: linear-gradient(90deg, #f0cddc 1px, transparent 1px),
+					linear-gradient(#f0cddc 1px, transparent 1px);
+				background-size: 28px 28px;
+			}
+
+			/* ─── 2. Main frame & header ─── */
+			.shell {
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				min-height: 100dvh;
+				margin: 0 auto;
+				z-index: 1;
+				width: min(100%, 1500px);
+				gap: 15px;
+				padding: clamp(14px, 1.75vw, 25px);
+			}
+
+			.topbar {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				flex: 0 0 auto;
+				position: relative;
+				gap: 13px;
+				min-height: 66px;
+				padding: 8px 13px;
+				border: 2px solid rgba(255,255,255,.94);
+				border-radius: 26px;
+				background: rgba(255,250,254,.77);
+				box-shadow: 0 4px 0 #efdbe9, 0 9px 22px rgba(137,95,144,.075);
+			}
+
+			.brand {
+				display: flex;
+				align-items: center;
+				flex: 0 0 auto;
+				gap: 9px;
+			}
+
+			.brand-mark {
+				position: relative;
+				width: 50px;
+				height: 50px;
+				flex: 0 0 50px;
+				display: grid;
+				place-items: center;
+				overflow: visible;
+				background: #fff0df;
+				border: 2px solid white;
+				outline: 1px solid #f1c3cb;
+				border-radius: 18px;
+				box-shadow: 0 4px 0 #f7d9e1, 0 4px 12px rgba(151,107,110,.07);
+				transform: rotate(-5deg);
+				font-size: 0;
+			}
+
+			.brand h1 {
+				margin: 0;
+				color: #6b4e76;
+				font-size: 23px;
+				font-weight: 900;
+				letter-spacing: -.065em;
+				line-height: 1.07;
+			}
+
+			.brand h1 span {
+				font-size: 20px;
+				color: #ee9dbc;
+				display: inline-block;
+				transform: rotate(-15deg);
+				margin-left: 4px;
+			}
+
+			.brand p {
+				margin: 1px 0 0;
+				letter-spacing: .018em;
+				white-space: nowrap;
+				margin-top: 5px;
+				font-size: 10px;
+				color: #947c99;
+			}
+
+			.brand-mark::after {
+				position: absolute;
+				text-shadow: 0 1px 0 white;
+				transform: rotate(17deg);
+				content: "✦";
+				top: -10px;
+				right: -8px;
+				font-size: 18px;
+				color: #e9a3cb;
+				animation: twinkle 4s ease-in-out infinite;
+			}
+
+			.brand p strong {
+				font-weight: 800;
+				color: #9e688f;
+			}
+
+			.brand p span {
+				margin-inline: 3px;
+				color: #e8ad95;
+			}
+
+			/* ─── 3. Category panels & flexible rows ─── */
+			.board {
+				display: flex;
+				flex-wrap: wrap;
+				align-content: stretch;
+				align-items: stretch;
+				flex: 1 1 auto;
+				min-height: 420px;
+				gap: 13px;
+			}
+
+			.group {
+				--accent: #d8c7ff;
+				position: relative;
+				display: flex;
+				flex-direction: column;
+				flex: 1 1 clamp(205px, 22vw, 265px);
+				min-width: 0;
+				min-height: 0;
+				overflow: visible;
+				isolation: isolate;
+				flex-basis: clamp(205px,22vw,265px);
+				padding: clamp(12px,1.3vw,18px);
+				border: 2px solid color-mix(in srgb,var(--accent) 80%,white);
+				border-radius: 25px;
+				background: linear-gradient(150deg,
+					color-mix(in srgb,var(--accent) 48%,white) 0%,
+					color-mix(in srgb,var(--accent) 29%,white) 80%);
+				box-shadow: 0 5px 0 color-mix(in srgb,var(--accent) 48%,white),
+					inset 0 1px 0 rgba(255,255,255,.9),
+					0 8px 18px rgba(122,83,115,.055);
+				transition: border-color .15s, box-shadow .15s, transform .16s;
+			}
+
+			.group::before {
+				color: color-mix(in srgb, var(--accent) 75%, #ab7eaa);
+				font-size: 25px;
+				line-height: 1;
+				content: "";
+				position: absolute;
+				top: -9px;
+				left: 49%;
+				right: auto;
+				width: 57px;
+				height: 17px;
+				border: 1px solid rgba(255,255,255,.85);
+				border-radius: 3px;
+				background: repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 5px,rgba(255,255,255,.08) 5px 10px),
+					color-mix(in srgb,var(--accent) 65%,white);
+				opacity: .90;
+				transform: translateX(-50%) rotate(-7deg);
+				box-shadow: 0 1px 3px rgba(123,74,125,.10);
+				pointer-events: none;
+			}
+
+			.group:hover {
+				border-color: color-mix(in srgb,var(--accent) 95%,white);
+				box-shadow: 0 6px 0 color-mix(in srgb,var(--accent) 53%,white),
+					inset 0 1px 0 white,
+					0 12px 22px rgba(122,83,115,.08);
+			}
+
+			.group-heading {
+				position: relative;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-bottom: 12px;
+				min-height: 34px;
+			}
+
+			.symbol {
+				display: grid;
+				place-items: center;
+				flex: 0 0 30px;
+				color: #65566f;
+				font-weight: 750;
+				width: 34px;
+				height: 34px;
+				flex-basis: 34px;
+				font-size: 17px;
+				line-height: 1;
+				border: 2px solid white;
+				border-radius: 13px;
+				background: rgba(255,255,255,.89);
+				box-shadow: 0 3px 0 color-mix(in srgb,var(--accent) 50%,white),
+					0 2px 7px rgba(113,77,129,.055);
+				transform: rotate(-6deg);
+			}
+
+			.group h2 {
+				margin: 0;
+				font-size: 16px;
+				color: #5f4a67;
+				font-weight: 900;
+				letter-spacing: -.025em;
+			}
+
+			.count {
+				margin-left: auto;
+				font-size: 10px;
+				font-weight: 760;
+				letter-spacing: .08em;
+				border: 1px solid rgba(255,255,255,.95);
+				padding: 4px 7px;
+				color: #8a6b95;
+				background: rgba(255,255,255,.65);
+				border-radius: 999px;
+				font-family: inherit;
+			}
+
+			.links {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+				align-content: start;
+				position: relative;
+				z-index: 1;
+				gap: 8px;
+			}
+
+			.group.compact .links {
+				grid-template-columns: repeat(auto-fill, 43px);
+				gap: 7px;
+			}
+
+			.group.compact .shortcut {
+				position: relative;
+				display: block;
+				width: 43px;
+				min-height: 43px;
+				height: 43px;
+				padding: 0;
+				border-radius: 10px;
+				background: rgba(255,255,255,.88);
+				box-shadow: 0 3px 0 color-mix(in srgb,var(--accent) 35%,white);
+			}
+
+			.group.compact .shortcut-link {
+				position: absolute;
+				inset: 0;
+				display: grid;
+				place-items: center;
+				width: 100%;
+				height: 100%;
+				border-radius: inherit;
+			}
+
+			.group.compact .logo {
+				width: 30px;
+				height: 30px;
+				border-radius: 8px;
+				flex: 0 0 auto;
+			}
+
+			.group.compact .logo img {
+				width: 24px;
+				height: 24px;
+			}
+
+			.group.compact .name {
+				display: none;
+			}
+
+			.group.compact .check-wrap {
+				position: absolute;
+				right: -5px;
+				bottom: -5px;
+				z-index: 1;
+				width: 20px;
+				height: 20px;
+				min-width: 0;
+				padding: 0;
+			}
+
+			.group.compact .site-check {
+				width: 14px;
+				height: 14px;
+				border-radius: 4px;
+				box-shadow: 0 1px 4px rgba(72, 54, 98, .13);
+			}
+
+			.group.compact .site-check::after {
+				font-size: 11px;
+			}
+
+			.group::after {
+				content: attr(data-sticker);
+				position: absolute;
+				right: 13px;
+				bottom: 7px;
+				font-family: sans-serif;
+				font-size: 55px;
+				line-height: 1;
+				color: color-mix(in srgb,var(--accent) 69%,#ac75a3);
+				opacity: .35;
+				pointer-events: none;
+				transform: rotate(-13deg);
+				z-index: -1;
+			}
+
+			.count::before {
+				content: "♡ ";
+				color: #da8fad;
+			}
+
+			.group:nth-child(2n)::before {
+				transform: translateX(-50%) rotate(6deg);
+			}
+
+			.group:nth-child(2n) .symbol {
+				transform: rotate(6deg);
+			}
+
+			/* ─── 4. Shortcut links & selection checkboxes ─── */
+			.shortcut {
+				display: flex;
+				align-items: center;
+				min-width: 0;
+				min-height: 47px;
+				gap: 5px;
+				padding: 6px 8px;
+				transition: transform .14s, background .14s, box-shadow .14s, border-color .14s;
+				border: 1.5px solid rgba(255,255,255,.95);
+				border-radius: 15px;
+				background: rgba(255,255,255,.84);
+				box-shadow: 0 3px 0 rgba(255,255,255,.7),
+					inset 0 -1px 2px rgba(149,118,148,.04);
+			}
+
+			.shortcut:hover {
+				transform: translateY(-2px) rotate(-.5deg);
+				border-color: rgba(255,255,255,1);
+				background: #fff;
+				box-shadow: 0 5px 0 rgba(255,255,255,.65),
+					0 5px 9px rgba(137,90,134,.09);
+			}
+
+			.shortcut:has(.site-check:checked) {
+				border-color: color-mix(in srgb,var(--accent) 87%,white);
+				background: #fffdfa;
+			}
+
+			.shortcut-link {
+				display: flex;
+				align-items: center;
+				align-self: stretch;
+				flex: 1 1 auto;
+				min-width: 0;
+				gap: 9px;
+				text-decoration: none;
+				color: #65536d;
+			}
+
+			.shortcut-link:hover {
+				color: #634268;
+			}
+
+			.shortcut-link:focus-visible {
+				outline: 2px solid var(--focus);
+				outline-offset: 3px;
+				border-radius: 5px;
+			}
+
+			.logo {
+				display: grid;
+				place-items: center;
+				width: 32px;
+				height: 32px;
+				flex: 0 0 32px;
+				overflow: hidden;
+				border-color: #f2e9f5;
+				border: 1px solid #f5e6f0;
+				border-radius: 11px;
+				background: #fffafc;
+			}
+
+			.logo img {
+				display: block;
+				width: 24px;
+				height: 24px;
+				object-fit: contain;
+			}
+
+			.fallback {
+				display: none;
+				font-size: 15px;
+				font-weight: 800;
+				color: #9b7099;
+			}
+
+			.logo.missing img {
+				display: none;
+			}
+
+			.logo.missing .fallback {
+				display: block;
+			}
+
+			.name {
+				flex: 1;
+				min-width: 0;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				font-size: 12px;
+				font-weight: 800;
+				color: #5a4763;
+			}
+
+			.check-wrap {
+				display: grid;
+				place-items: center;
+				align-self: stretch;
+				flex: 0 0 28px;
+				min-width: 28px;
+				cursor: pointer;
+				position: relative;
+			}
+
+			.site-check {
+				appearance: none;
+				display: grid;
+				place-items: center;
+				width: 18px;
+				height: 18px;
+				margin: 0;
+				border-radius: 6px;
+				background: #fff;
+				cursor: pointer;
+				transition: border-color .14s, background .14s;
+				border-color: #c7b4ce;
+				border: 1.5px solid #c9b2cc;
+				box-shadow: inset 0 1px 1px #f8f2fc;
+			}
+
+			.site-check::after {
+				content: "✓";
+				opacity: 0;
+				color: #3d3048;
+				font-size: 13px;
+				font-weight: 900;
+				line-height: 1;
+			}
+
+			.site-check:hover {
+				border-color: #8363a9;
+			}
+
+			.site-check:checked {
+				background: color-mix(in srgb,var(--accent) 73%,white);
+				border-color: #b77daa;
+			}
+
+			.site-check:checked::after {
+				opacity: 1;
+			}
+
+			.site-check:focus-visible {
+				outline: 2px solid var(--focus);
+				outline-offset: 3px;
+			}
+
+			.shortcut-tooltip {
+				position: fixed;
+				z-index: 999;
+				max-width: min(300px, calc(100vw - 16px));
+				line-height: 1.2;
+				text-align: center;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				pointer-events: none;
+				padding: 8px 12px;
+				background: #fff8fc;
+				color: #815575;
+				border: 2px solid #e9bad5;
+				box-shadow: 0 4px 0 #f6d5e6, 0 10px 20px rgba(137,86,128,.14);
+				font-family: inherit;
+				font-size: 12px;
+				font-weight: 850;
+				border-radius: 13px;
+			}
+
+			.shortcut-tooltip[hidden] {
+				display: none;
+			}
+
+			.shortcut-tooltip::after {
+				content: "";
+				position: absolute;
+				bottom: -5px;
+				left: calc(50% - 5px);
+				width: 9px;
+				height: 9px;
+				transform: rotate(45deg);
+				border-right: 1px solid #80668b;
+				border-bottom: 1px solid #80668b;
+				background: #fff8fc;
+				border-color: #e9bad5;
+			}
+
+			.shortcut-tooltip[data-placement="below"]::after {
+				top: -5px;
+				bottom: auto;
+				transform: rotate(225deg);
+			}
+
+			.shortcut-tooltip::before {
+				content: "♡ ";
+				color: #d78bab;
+			}
+
+			/* ─── 5. Search box ─── */
+			.search-form {
+				display: flex;
+				align-items: center;
+				flex: 1 1 400px;
+				width: 100%;
+				margin: 0 auto;
+				transition: border-color .15s, background .15s;
+				flex-basis: 360px;
+				border-color: #edd7e6;
+				min-width: 180px;
+				max-width: 510px;
+				height: 46px;
+				border: 2px solid #f2cedf;
+				background: #fff;
+				border-radius: 999px;
+				box-shadow: 0 4px 0 #f6dfe9, inset 0 1px 5px rgba(236, 181, 206, .06);
+				padding: 4px 4px 4px 16px;
+				gap: 8px;
+			}
+
+			.search-form:focus-within {
+				background: #fff;
+				border-color: #e3a4cb;
+				box-shadow: 0 4px 0 #f6dfe9, 0 0 0 3px #ffe4f3;
+			}
+
+			.search-icon {
+				flex: 0 0 auto;
+				color: #c387af;
+			}
+
+			#google-query {
+				flex: 1 1 auto;
+				min-width: 0;
+				height: 100%;
+				border: 0;
+				outline: 0;
+				background: transparent;
+				color: var(--text);
+				font: inherit;
+				font-size: 12px;
+				font-weight: 600;
+			}
+
+			#google-query::placeholder {
+				color: #ad9ab0;
+			}
+
+			.search-scope {
+				flex: 0 0 auto;
+				font-weight: 650;
+				white-space: nowrap;
+				border-color: #f2e5f2;
+				padding: 5px 8px;
+				border: 1px solid #efdbf1;
+				border-radius: 999px;
+				background: #faf0ff;
+				color: #8a6e9b;
+				font-size: 10px;
+			}
+
+			.clear-filters {
+				flex: 0 0 18px;
+				padding: 0;
+				border: 0;
+				background: transparent;
+				color: #8c799c;
+				font-size: 17px;
+				cursor: pointer;
+			}
+
+			.clear-filters:hover {
+				color: #513866;
+			}
+
+			.clear-filters[hidden] {
+				display: none;
+			}
+
+			.search-button {
+				display: grid;
+				place-items: center;
+				flex: 0 0 35px;
+				padding: 0;
+				font-size: 19px;
+				font-weight: 700;
+				cursor: pointer;
+				transition: filter .15s, transform .15s;
+				height: 34px;
+				flex-basis: 34px;
+				border: 1.5px solid #edb5d2;
+				border-radius: 50%;
+				background: linear-gradient(145deg,#ffd1e6,#e4cfff);
+				box-shadow: inset 0 1px #fff, 0 2px 0 #eab1cd;
+				color: #775284;
+			}
+
+			.search-button:hover {
+				filter: saturate(1.15);
+				transform: translateY(-1px);
+			}
+
+			.search-button:focus-visible, .clear-filters:focus-visible {
+				outline: 2px solid var(--focus);
+				outline-offset: 2px;
+			}
+
+			/* ─── 6. Icon-only / compact modes ─── */
+			[data-layout="icons"] .board {
+				align-content: flex-start;
+			}
+
+			[data-layout="icons"] .group {
+				min-height: 154px;
+				padding: 14px;
+			}
+
+			[data-layout="icons"] .group-heading {
+				margin-bottom: 13px;
+			}
+
+			[data-layout="icons"] .group .links {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, 52px);
+				justify-content: center;
+				align-content: start;
+				gap: 9px;
+			}
+
+			[data-layout="icons"] .group .shortcut {
+				position: relative;
+				display: block;
+				width: 52px;
+				height: 52px;
+				min-height: 52px;
+				padding: 0;
+				border: 2px solid white;
+				border-radius: 16px;
+				background: rgba(255,255,255,.9);
+				box-shadow: 0 4px 0 color-mix(in srgb,var(--accent) 38%,white),
+					inset 0 1px 0 white;
+			}
+
+			[data-layout="icons"] .group .shortcut-link {
+				position: absolute;
+				inset: 0;
+				display: grid;
+				place-items: center;
+				width: 100%;
+				height: 100%;
+				border-radius: inherit;
+			}
+
+			[data-layout="icons"] .group .logo {
+				width: 36px;
+				height: 36px;
+				flex: 0 0 auto;
+				border-radius: 10px;
+				background: #fffbfe;
+				box-shadow: none;
+			}
+
+			[data-layout="icons"] .group .logo img {
+				width: 27px;
+				height: 27px;
+			}
+
+			[data-layout="icons"] .group .fallback {
+				font-size: 17px;
+			}
+
+			[data-layout="icons"] .group .name {
+				display: none;
+			}
+
+			[data-layout="icons"] .group .check-wrap {
+				position: absolute;
+				z-index: 2;
+				right: -5px;
+				bottom: -5px;
+				width: 21px;
+				height: 21px;
+				min-width: 0;
+				padding: 0;
+			}
+
+			[data-layout="icons"] .group .site-check {
+				width: 15px;
+				height: 15px;
+				box-shadow: 0 1px 5px rgba(74, 52, 96, .12);
+				border-radius: 6px;
+				background: #fff;
+			}
+
+			[data-layout="icons"] .group .site-check::after {
+				font-size: 10px;
+			}
+
+			[data-layout="icons"] .group.mini-icons .links {
+				grid-template-columns: repeat(auto-fill, 43px);
+				gap: 7px;
+			}
+
+			[data-layout="icons"] .group.mini-icons .shortcut {
+				width: 43px;
+				height: 43px;
+				min-height: 43px;
+				border-radius: 13px;
+			}
+
+			[data-layout="icons"] .group.mini-icons .logo {
+				width: 30px;
+				height: 30px;
+				border-radius: 8px;
+			}
+
+			[data-layout="icons"] .group.mini-icons .logo img {
+				width: 23px;
+				height: 23px;
+			}
+
+			[data-layout="icons"] .group .shortcut:hover {
+				transform: translateY(-3px) rotate(-5deg);
+				background: white;
+				box-shadow: 0 6px 0 color-mix(in srgb,var(--accent) 48%,white),
+					0 9px 14px rgba(115,82,139,.09);
+			}
+
+			[data-layout="icons"] .group .site-check:checked {
+				background: color-mix(in srgb,var(--accent) 74%,white);
+			}
+
+			/* ─── 7. Floating tooltip & view buttons ─── */
+			.view-toggle {
+				display: flex;
+				flex: 0 0 auto;
+				align-items: center;
+				gap: 3px;
+				white-space: nowrap;
+				border: 2px solid #edd5e6;
+				background: #fffafc;
+				padding: 4px;
+				border-radius: 999px;
+				box-shadow: 0 4px 0 #f2dfe9;
+			}
+
+			.view-button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 6px;
+				border: 1px solid transparent;
+				border-radius: 999px;
+				background: transparent;
+				font: inherit;
+				font-size: 11px;
+				font-weight: 750;
+				cursor: pointer;
+				transition: background .15s, color .15s, transform .15s;
+				min-height: 33px;
+				padding: 5px 10px;
+				color: #8d7396;
+			}
+
+			.view-button:hover {
+				color: #665071;
+				background: #fff0f7;
+			}
+
+			.view-button[aria-pressed="true"] {
+				border-color: #f1c9e2;
+				border: 1px solid #e7aecf;
+				color: #88567e;
+				background: linear-gradient(145deg,#ffd7e8,#ffe9f5);
+				box-shadow: inset 0 1px rgba(255,255,255,.96),0 2px 0 #edc5dc;
+			}
+
+			.view-button:focus-visible {
+				outline: 2px solid var(--focus);
+				outline-offset: 2px;
+			}
+
+			.view-icon {
+				font-weight: 700;
+				line-height: 1;
+				font-size: 16px;
+			}
+
+			.view-button[aria-pressed="true"]:hover {
+				background: #ffdfef;
+			}
+
+			/* ─── 8. Mascots and flourishes ─── */
+			.fox-face {
+				display: block;
+				width: 48px;
+				height: 48px;
+				transform: rotate(5deg);
+			}
+
+			.corner-buddy {
+				display: none;
+			}
+
+			/* ─── 9. Floating pastel background shapes ─── */
+			/* Each span under <body> sets its own position, color, size, and timing. */
+			.floating-shapes {
+				position: fixed;
+				inset: 0;
+				z-index: 100;
+				overflow: hidden;
+				pointer-events: none;
+			}
+
+			.floating-shape {
+				position: absolute;
+				left: var(--x);
+				top: var(--y);
+				width: var(--size, 14px);
+				height: var(--size, 14px);
+				opacity: .56;
+				color: var(--color, #eec5de);
+				animation: pastel-drift var(--duration, 18s) ease-in-out var(--delay, 0s) infinite alternate;
+			}
+
+			.floating-shape--dot {
+				border-radius: 50%;
+				background: currentColor;
+				box-shadow: inset 0 2px 0 rgba(255, 255, 255, .55);
+			}
+
+			.floating-shape--diamond::before {
+				content: "";
+				position: absolute;
+				inset: 2px;
+				border-radius: 4px;
+				background: currentColor;
+				transform: rotate(45deg);
+			}
+
+			.floating-shape--star,
+			.floating-shape--heart,
+			.floating-shape--flower {
+				display: grid;
+				place-items: center;
+				font-family: ui-rounded, system-ui, sans-serif;
+				line-height: 1;
+			}
+
+			.floating-shape--star::before { content: "✧"; font-size: calc(var(--size, 14px) * 1.35); }
+			.floating-shape--heart::before { content: "♡"; font-size: calc(var(--size, 14px) * 1.25); }
+			.floating-shape--flower::before { content: "✿"; font-size: calc(var(--size, 14px) * 1.15); }
+
+			/* ─── Colorful Shortcut Tiles ─── */
+
+			.group .shortcut,
+			.group.compact .shortcut,
+			[data-layout="icons"] .group .shortcut {
+				--tint: 58%;
+
+				background: color-mix(in srgb, var(--accent) var(--tint), white);
+				border-color: color-mix(in srgb, var(--accent) 75%, white);
+				box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 45%, white);
+			}
+
+			/* Slight variations between neighboring shortcuts */
+			.group .shortcut:nth-child(3n + 2) {
+				--tint: 43%;
+			}
+
+			.group .shortcut:nth-child(3n) {
+				--tint: 70%;
+			}
+
+			/* Hover effects */
+			.group .shortcut:hover,
+			.group.compact .shortcut:hover,
+			[data-layout="icons"] .group .shortcut:hover {
+				background: color-mix(in srgb, var(--accent) 80%, white);
+				border-color: var(--accent);
+				box-shadow: 0 5px 0 color-mix(in srgb, var(--accent) 55%, white);
+			}
+
+			/* Selected shortcuts */
+			.group .shortcut:has(.site-check:checked),
+			.group.compact .shortcut:has(.site-check:checked),
+			[data-layout="icons"] .group .shortcut:has(.site-check:checked) {
+				background: color-mix(in srgb, var(--accent) 85%, white);
+				border-color: var(--accent);
+			}
+
+			/* Tinted icon backgrounds */
+			.group .logo,
+			[data-layout="icons"] .group .logo {
+				background: color-mix(in srgb, var(--accent) 25%, white);
+				border-color: color-mix(in srgb, var(--accent) 55%, white);
+			}
+
+			/* Matching checkboxes */
+			.group .site-check,
+			[data-layout="icons"] .group .site-check {
+				background: color-mix(in srgb, var(--accent) 30%, white);
+				border-color: color-mix(in srgb, var(--accent) 80%, white);
+			}
+			
+			@keyframes pastel-drift {
+				0% { transform: translate3d(-4px, 7px, 0) rotate(-9deg); }
+				50% { transform: translate3d(8px, -11px, 0) rotate(8deg); }
+				100% { transform: translate3d(-8px, -23px, 0) rotate(-4deg); }
+			}
+
+			/* ─── 10. Responsive layout overrides ─── */
+			@media (min-width: 850px) and (max-height: 650px) {
+				.shell {
+					gap: 12px;
+					padding-block: 12px;
+				}
+
+				.board {
+					gap: 10px;
+				}
+
+				.group {
+					padding-block: 10px;
+				}
+
+				.group-heading {
+					margin-bottom: 8px;
+				}
+
+				.links {
+					gap: 6px;
+				}
+
+				.shortcut {
+					min-height: 41px;
+					padding-block: 4px;
+				}
+
+				.logo {
+					width: 29px;
+					height: 29px;
+					flex-basis: 29px;
+				}
+
+				.logo img {
+					width: 22px;
+					height: 22px;
+				}
+
+				.topbar {
+					min-height: 59px;
+					padding: 5px 11px;
+				}
+
+				.brand-mark {
+					width: 43px;
+					height: 43px;
+					flex-basis: 43px;
+				}
+
+				.fox-face {
+					width: 41px;
+					height: 41px;
+				}
+
+				[data-layout="icons"] .group {
+					min-height: 132px;
+					padding: 11px;
+				}
+
+				[data-layout="icons"] .group-heading {
+					margin-bottom: 9px;
+				}
+			}
+
+			@media (max-width: 770px) {
+				.topbar {
+					flex-wrap: wrap;
+					row-gap: 10px;
+					padding: 9px 10px;
+				}
+
+				.search-form {
+					order: 3;
+					flex-basis: 100%;
+					margin: 0;
+					min-width: 0;
+					max-width: none;
+				}
+
+				.summary {
+					margin-left: auto;
+				}
+
+				.board {
+					min-height: 0;
+				}
+			}
+
+			@media (max-width: 520px) {
+				.shell {
+					gap: 10px;
+					padding: 12px;
+				}
+
+				.topbar {
+					min-height: 42px;
+					border-radius: 20px;
+					gap: 8px;
+				}
+
+				.brand-mark {
+					font-size: 20px;
+					width: 41px;
+					height: 41px;
+					flex-basis: 41px;
+					border-radius: 14px;
+				}
+
+				.brand h1 {
+					font-size: 19px;
+				}
+
+				.brand p {
+					font-size: 9px;
+				}
+
+				.summary {
+					padding: 6px 8px;
+					gap: 6px;
+					font-size: 10px;
+				}
+
+				.summary .divider, .summary .categories {
+					display: none;
+				}
+
+				.search-form {
+					height: 41px;
+					padding-left: 12px;
+				}
+
+				.board {
+					gap: 10px;
+				}
+
+				.group {
+					flex-basis: 155px;
+					padding: 10px;
+					border-radius: 19px;
+				}
+
+				.group-heading {
+					min-height: 29px;
+					gap: 7px;
+					margin-bottom: 9px;
+				}
+
+				.group h2 {
+					font-size: 14px;
+				}
+
+				.symbol {
+					width: 29px;
+					height: 29px;
+					flex-basis: 29px;
+					font-size: 15px;
+					border-radius: 11px;
+				}
+
+				.count {
+					display: none;
+				}
+
+				.links {
+					gap: 6px;
+				}
+
+				.shortcut {
+					padding: 5px 5px;
+					gap: 1px;
+					border-radius: 10px;
+					min-height: 41px;
+				}
+
+				.shortcut-link {
+					gap: 6px;
+				}
+
+				.logo {
+					width: 26px;
+					height: 26px;
+					flex-basis: 26px;
+					border-radius: 7px;
+				}
+
+				.logo img {
+					width: 20px;
+					height: 20px;
+				}
+
+				.name {
+					font-size: 11px;
+				}
+
+				.check-wrap {
+					flex-basis: 22px;
+					min-width: 22px;
+				}
+
+				.site-check {
+					width: 17px;
+					height: 17px;
+					border-radius: 5px;
+				}
+
+				.brand-mark::after {
+					font-size: 12px;
+					right: -7px;
+					top: -9px;
+				}
+
+				.view-button {
+					min-height: 30px;
+					padding: 4px 9px;
+				}
+
+				.view-label {
+					display: none;
+				}
+
+				.view-icon {
+					font-size: 20px;
+				}
+
+				.group::before {
+					right: 10px;
+					font-size: 18px;
+					top: -7px;
+					width: 42px;
+					height: 13px;
+				}
+
+				.group::after {
+					font-size: 38px;
+					right: 6px;
+					bottom: 3px;
+				}
+
+				.count::before {
+					content: "";
+				}
+
+				[data-layout="icons"] .group {
+					padding: 9px;
+					min-height: 130px;
+				}
+
+				[data-layout="icons"] .group-heading {
+					margin-bottom: 9px;
+				}
+
+				[data-layout="icons"] .group .links {
+					grid-template-columns: repeat(auto-fill, 45px);
+					gap: 7px;
+				}
+
+				[data-layout="icons"] .group .shortcut {
+					width: 45px;
+					height: 45px;
+					min-height: 45px;
+					border-radius: 13px;
+				}
+
+				[data-layout="icons"] .group .logo {
+					width: 31px;
+					height: 31px;
+					border-radius: 9px;
+				}
+
+				[data-layout="icons"] .group .logo img {
+					width: 23px;
+					height: 23px;
+				}
+
+				.fox-face {
+					width: 39px;
+					height: 39px;
+				}
+
+				.brand h1 span {
+					font-size: 17px;
+				}
+
+				.search-scope {
+					padding: 3px 5px;
+					font-size: 9px;
+				}
+
+				.view-toggle {
+					padding: 3px;
+				}
+
+				.floating-shape {
+					opacity: .38;
+				}
+			}
+
+			@media (max-width: 360px) {
+				.group {
+					flex-basis: 100%;
+				}
+
+				.summary {
+					display: none;
+				}
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				*, *::before, *::after {
+					transition: none !important;
+				}
+
+				.brand-mark::after {
+					animation: none;
+				}
+
+				.floating-shape {
+					animation: none;
+				}
+			}
+
+			@media (min-width: 1000px) and (min-height: 700px) {
+				.corner-buddy {
+					display: flex;
+					position: fixed;
+					bottom: 15px;
+					right: 28px;
+					z-index: 0;
+					width: 155px;
+					align-items: center;
+					flex-direction: column;
+					pointer-events: none;
+					opacity: .85;
+				}
+
+				.buddy-fox {
+					height: 98px;
+					width: 134px;
+					display: block;
+				}
+
+				.buddy-message {
+					align-self: flex-start;
+					margin-left: -7px;
+					padding: 7px 12px;
+					border: 2px solid #f0c8da;
+					border-radius: 15px 15px 15px 3px;
+					background: #fffafc;
+					box-shadow: 0 3px 0 #f9e0e8;
+					color: #ab7798;
+					font-size: 11px;
+					font-weight: 800;
+					transform: rotate(-6deg);
+					white-space: nowrap;
+				}
+
+				.buddy-message span {
+					color: #e9a0bd;
+				}
+
+				.buddy-sparkle {
+					position: absolute;
+					right: 6px;
+					top: 38px;
+					color: #e9accc;
+					font-size: 25px;
+				}
+			}
+
+			@keyframes twinkle {
+				0%, 90%, 100% {
+					transform: rotate(0) scale(1);
+				}
+
+				95% {
+					transform: rotate(12deg) scale(1.2);
+				}
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- Decorative only: sits behind the cards and never captures clicks. -->
+		<div class="floating-shapes" aria-hidden="true">
+			<span class="floating-shape floating-shape--star" style="--x: 3%; --y: 9%; --size: 16px; --color: #edabc8; --duration: 14s; --delay: -4s;"></span>
+			<span class="floating-shape floating-shape--dot" style="--x: 10%; --y: 22%; --size: 11px; --color: #b8d8ff; --duration: 17s; --delay: -9s;"></span>
+			<span class="floating-shape floating-shape--heart" style="--x: 21%; --y: 7%; --size: 21px; --color: #ecc1eb; --duration: 21s; --delay: -2s;"></span>
+			<span class="floating-shape floating-shape--diamond" style="--x: 39%; --y: 17%; --size: 12px; --color: #bde9dc; --duration: 16s; --delay: -5s;"></span>
+			<span class="floating-shape floating-shape--flower" style="--x: 66%; --y: 10%; --size: 15px; --color: #ffcbaf; --duration: 22s; --delay: -13s;"></span>
+			<span class="floating-shape floating-shape--dot" style="--x: 88%; --y: 16%; --size: 13px; --color: #b5b8ed; --duration: 19s; --delay: -7s;"></span>
+			<span class="floating-shape floating-shape--star" style="--x: 96%; --y: 7%; --size: 20px; --color: #f1b9d4; --duration: 25s; --delay: -16s;"></span>
+			<span class="floating-shape floating-shape--heart" style="--x: 2%; --y: 41%; --size: 15px; --color: #f2b8c9; --duration: 18s; --delay: -9s;"></span>
+			<span class="floating-shape floating-shape--dot" style="--x: 28%; --y: 51%; --size: 10px; --color: #b4e5e0; --duration: 24s; --delay: -4s;"></span>
+			<span class="floating-shape floating-shape--flower" style="--x: 49%; --y: 37%; --size: 14px; --color: #f7cfaa; --duration: 23s; --delay: -12s;"></span>
+			<span class="floating-shape floating-shape--diamond" style="--x: 76%; --y: 46%; --size: 14px; --color: #d8c9ff; --duration: 17s; --delay: -7s;"></span>
+			<span class="floating-shape floating-shape--star" style="--x: 97%; --y: 54%; --size: 18px; --color: #c9bee9; --duration: 21s; --delay: -10s;"></span>
+			<span class="floating-shape floating-shape--dot" style="--x: 9%; --y: 73%; --size: 12px; --color: #f0bfdb; --duration: 20s; --delay: -6s;"></span>
+			<span class="floating-shape floating-shape--flower" style="--x: 34%; --y: 84%; --size: 20px; --color: #edbad1; --duration: 25s; --delay: -15s;"></span>
+			<span class="floating-shape floating-shape--heart" style="--x: 58%; --y: 76%; --size: 18px; --color: #b9e1d1; --duration: 19s; --delay: -4s;"></span>
+			<span class="floating-shape floating-shape--diamond" style="--x: 82%; --y: 86%; --size: 14px; --color: #f7d0b8; --duration: 22s; --delay: -14s;"></span>
+			<span class="floating-shape floating-shape--star" style="--x: 95%; --y: 94%; --size: 17px; --color: #c3b5f1; --duration: 16s; --delay: -8s;"></span>
+			<span class="floating-shape floating-shape--dot" style="--x: 5%; --y: 95%; --size: 10px; --color: #b5e2ce; --duration: 23s; --delay: -3s;"></span>
+		</div>
+
+		<div class="shell">
+			<!-- ─────── Header ─────── -->
+			<header class="topbar">
+				<div class="brand">
+					<span class="brand-mark" aria-hidden="true">
+						<svg class="fox-face" viewBox="0 0 80 78" role="img" aria-label="">
+							<path d="M11 36 12 8 Q13 4 19 9 L31 21 Q40 18 49 21 L62 8 Q68 4 69 10 L70 37" fill="#eea971" stroke="#996779" stroke-width="2.4" stroke-linejoin="round"/>
+							<path d="M17 30 18 16 29 26M62 30 62 16 51 26" fill="#ffcbd5"/>
+							<path d="M9 41C9 25 23 19 40 19S71 25 71 41C71 60 57 70 40 70S9 60 9 41Z" fill="#f5b780" stroke="#996779" stroke-width="2.4"/>
+							<path d="M12 44Q21 39 30 49Q40 58 50 49Q59 39 68 44Q61 68 40 69Q19 68 12 44Z" fill="#fffaf4"/>
+							<path d="M23 39q4-5 8 0M49 39q4-5 8 0" stroke="#704b64" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+							<ellipse cx="20" cy="46" rx="5.5" ry="3.6" fill="#ed8f9f" opacity=".85"/>
+							<ellipse cx="60" cy="46" rx="5.5" ry="3.6" fill="#ed8f9f" opacity=".85"/>
+							<path d="M37 47Q40 43 43 47Q43 50 40 51Q37 50 37 47Z" fill="#805768"/>
+							<path d="M40 51v2m0 0q-3 3-6 0m6 0q3 3 6 0" stroke="#805768" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+							<path d="M54 20q7-12 14-6" stroke="#fefaf9" stroke-width="2" fill="none"/>
+							<path d="M61 16q-4-4-2-8q5 0 6 5q2-5 7-3q1 5-5 7Z" fill="#ffe5f1" stroke="#c97daa" stroke-width="1"/>
+						</svg>
+					</span>
+					<div>
+						<h1>Higitsune<span>♡</span></h1>
+						<p id="summary">
+							<strong id="shortcuts-count">16</strong> little links
+							<span aria-hidden="true">✦</span>
+							<strong id="categories-count">07</strong> categories
+						</p>
+					</div>
+				</div>
+
+				<!-- Google search; checked shortcuts add Google site: filters. -->
+				<form class="search-form" id="google-search" action="https://www.google.com/search" method="get" role="search">
+					<svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+						<circle cx="10.8" cy="10.8" r="6.3"/>
+						<path d="m16 16 5 5"/>
+					</svg>
+					<input id="google-query" type="search" name="q" placeholder="Search Google" aria-label="Google search" autocomplete="off" required>
+					<span class="search-scope" id="search-scope" role="status" aria-live="polite" title="Check websites below to limit your search">All web</span>
+					<button class="clear-filters" type="button" id="clear-filters" title="Uncheck all sites" aria-label="Uncheck all sites" hidden>×</button>
+					<button class="search-button" type="submit" aria-label="Search Google" title="Search Google">↗</button>
+				</form>
+
+				<div class="view-toggle" role="group" aria-label="Link display mode">
+					<button type="button" class="view-button" data-view="listed" aria-pressed="true" title="Show names when there is room">
+						<span class="view-icon" aria-hidden="true">☷</span>
+						<span class="view-label">Listed</span>
+					</button>
+					<button type="button" class="view-button" data-view="icons" aria-pressed="false" title="Show all categories as icon grids">
+						<span class="view-icon" aria-hidden="true">▦</span>
+						<span class="view-label">All icons</span>
+					</button>
+				</div>
+			</header>
+
+			<!-- ─────── Bookmark categories ─────── -->
+			<!-- New .group sections automatically stretch to fill their row. -->
+			<main class="board" aria-label="Your shortcuts">
+				<!-- Social -->
+				<section class="group" style="--accent: #f7b3cf" aria-labelledby="social" data-sticker="✿">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">💌</span>
+						<h2 id="social">Social</h2>
+						<span class="count">02</span>
+					</div>
+
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://social.nekomizu.moe/">
+								<span class="logo">
+									<img src="img/nekomizu.png" alt="">
+									<span class="fallback">N</span>
+								</span>
+								<span class="name">Mastodon</span>
+							</a>
+							<label class="check-wrap" title="Include Twitter in Google searches">
+								<input class="site-check" type="checkbox" data-domain="social.nekomizu.moe" data-id="https://social.nekomizu.moe" aria-label="Search Neko Mizu Mastodon server with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://x.com">
+								<span class="logo">
+									<img src="img/twitter.png" alt="">
+									<span class="fallback">X</span>
+								</span>
+								<span class="name">Twitter</span>
+							</a>
+							<label class="check-wrap" title="Include Twitter in Google searches">
+								<input class="site-check" type="checkbox" data-domain="x.com" data-id="https://x.com" aria-label="Search Twitter with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://youtube.com">
+								<span class="logo">
+									<img src="img/youtube.png" alt="">
+									<span class="fallback">▶</span>
+								</span>
+								<span class="name">YouTube</span>
+							</a>
+							<label class="check-wrap" title="Include YouTube in Google searches">
+								<input class="site-check" type="checkbox" data-domain="youtube.com" data-id="https://youtube.com" aria-label="Search YouTube with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://reddit.com">
+								<span class="logo">
+									<img src="img/reddit.png" alt="">
+									<span class="fallback">▶</span>
+								</span>
+								<span class="name">Reddit</span>
+							</a>
+							<label class="check-wrap" title="Include Reddit in Google searches">
+								<input class="site-check" type="checkbox" data-domain="reddit.com" data-id="https://reddit.com" aria-label="Search Reddit with Google">
+							</label>
+						</div>
+
+
+					</div>
+				</section>
+
+				<!-- Coding -->
+				<section class="group" style="--accent: #91d7de" aria-labelledby="coding" data-sticker="✧">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">🧋</span>
+						<h2 id="coding">Coding</h2>
+						<span class="count">02</span>
+					</div>
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://github.com/">
+								<span class="logo">
+									<img src="img/github.png" alt="">
+									<span class="fallback">G</span>
+								</span>
+								<span class="name">GitHub</span>
+							</a>
+							<label class="check-wrap" title="Include GitHub in Google searches">
+								<input class="site-check" type="checkbox" data-domain="github.com" data-id="https://github.com/" aria-label="Search GitHub with Google">
+							</label>
+						</div>
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://stackoverflow.com/">
+								<span class="logo">
+									<img src="img/stackoverflow.png" alt="">
+									<span class="fallback">S</span>
+								</span>
+								<span class="name">StackOverflow</span>
+							</a>
+							<label class="check-wrap" title="Include StackOverflow in Google searches">
+								<input class="site-check" type="checkbox" data-domain="stackoverflow.com" data-id="https://stackoverflow.com/" aria-label="Search StackOverflow with Google">
+							</label>
+						</div>
+					</div>
+				</section>
+
+				<!-- Art -->
+				<section class="group" style="--accent: #f5c48c" aria-labelledby="art" data-sticker="✿">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">🎨</span>
+						<h2 id="art">Art</h2>
+						<span class="count">03</span>
+					</div>
+
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://gelbooru.com/">
+								<span class="logo">
+									<img src="img/gelbooru.png" alt="">
+									<span class="fallback">G</span>
+								</span>
+								<span class="name">Gelbooru</span>
+							</a>
+							<label class="check-wrap" title="Include Gelbooru in Google searches">
+								<input class="site-check" type="checkbox" data-domain="gelbooru.com" data-id="https://gelbooru.com/" aria-label="Search Gelbooru with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://iqdb.org/">
+								<span class="logo">
+									<img src="img/iqdb.jpg" alt="">
+									<span class="fallback">I</span>
+								</span>
+								<span class="name">IQDB</span>
+							</a>
+							<label class="check-wrap" title="Include IQDB in Google searches">
+								<input class="site-check" type="checkbox" data-domain="iqdb.org" data-id="https://iqdb.org/" aria-label="Search IQDB with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://deviantart.com/">
+								<span class="logo">
+									<img src="img/deviantart.png" alt="">
+									<span class="fallback">D</span>
+								</span>
+								<span class="name">DeviantArt</span>
+							</a>
+							<label class="check-wrap" title="Include DeviantArt in Google searches">
+								<input class="site-check" type="checkbox" data-domain="deviantart.com" data-id="https://deviantart.com/" aria-label="Search DeviantArt with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://vgen.co/">
+								<span class="logo">
+									<img src="img/vgen.png" alt="">
+									<span class="fallback">V</span>
+								</span>
+								<span class="name">VGen</span>
+							</a>
+							<label class="check-wrap" title="Include VGen in Google searches">
+								<input class="site-check" type="checkbox" data-domain="vgen.co" data-id="https://vgen.co/" aria-label="Search VGen with Google">
+							</label>
+						</div>
+
+
+					</div>
+				</section>
+
+				<!-- Artists -->
+				<section class="group" style="--accent: #f5abae" aria-labelledby="artists" data-sticker="♡">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">🍓</span>
+						<h2 id="artists">Artists</h2>
+						<span class="count">01</span>
+					</div>
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://sisters.booth.pm/">
+								<span class="logo">
+									<img src="img/booth.png" alt="">
+									<span class="fallback">H</span>
+								</span>
+								<span class="name">Hamuketsu</span>
+							</a>
+							<label class="check-wrap" title="Include Hamuketsu in Google searches">
+								<input class="site-check" type="checkbox" data-domain="sisters.booth.pm" data-id="https://sisters.booth.pm/" aria-label="Search Hamuketsu with Google">
+							</label>
+						</div>
+					</div>
+				</section>
+
+				<!-- Weeb -->
+				<section class="group" style="--accent: #c6b2f2" aria-labelledby="weeb" data-sticker="✧">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">🌸</span>
+						<h2 id="weeb">Weeb</h2>
+						<span class="count">03</span>
+					</div>
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://myanimelist.net/">
+								<span class="logo">
+									<img src="img/mal.png" alt="">
+									<span class="fallback">M</span>
+								</span>
+								<span class="name">MyAnimeList</span>
+							</a>
+							<label class="check-wrap" title="Include MyAnimeList in Google searches">
+								<input class="site-check" type="checkbox" data-domain="myanimelist.net" data-id="https://myanimelist.net/" aria-label="Search MyAnimeList with Google">
+							</label>
+						</div>
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://vndb.org/">
+								<span class="logo">
+									<img src="img/vndb.ico" alt="">
+									<span class="fallback">V</span>
+								</span>
+								<span class="name">VNDB</span>
+							</a>
+							<label class="check-wrap" title="Include VNDB in Google searches">
+								<input class="site-check" type="checkbox" data-domain="vndb.org" data-id="https://vndb.org/" aria-label="Search VNDB with Google">
+							</label>
+						</div>
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://nyaa.si/">
+								<span class="logo">
+									<img src="img/nyaa.jpg" alt="">
+									<span class="fallback">N</span>
+								</span>
+								<span class="name">Nyaa</span>
+							</a>
+							<label class="check-wrap" title="Include Nyaa in Google searches">
+								<input class="site-check" type="checkbox" data-domain="nyaa.si" data-id="https://nyaa.si/" aria-label="Search Nyaa with Google">
+							</label>
+						</div>
+					</div>
+				</section>
+
+				<!-- AI -->
+				<section class="group" style="--accent: #afe0b9" aria-labelledby="ai" data-sticker="✿">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">✨</span>
+						<h2 id="ai">AI</h2>
+						<span class="count">03</span>
+					</div>
+
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://chatgpt.com/">
+								<span class="logo">
+									<img src="img/chatgpt.png" alt="">
+									<span class="fallback">C</span>
+								</span>
+								<span class="name">ChatGPT</span>
+							</a>
+							<label class="check-wrap" title="Include ChatGPT in Google searches">
+								<input class="site-check" type="checkbox" data-domain="chatgpt.com" data-id="https://chatgpt.com/" aria-label="Search ChatGPT with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://novelai.net/image">
+								<span class="logo">
+									<img src="img/novelai.png" alt="">
+									<span class="fallback">N</span>
+								</span>
+								<span class="name">N.AI - Image</span>
+							</a>
+							<label class="check-wrap" title="Include N.AI - Image in Google searches">
+								<input class="site-check" type="checkbox" data-domain="novelai.net" data-id="https://novelai.net/image" aria-label="Search N.AI - Image with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://novelai.net/stories">
+								<span class="logo">
+									<img src="img/novelai.png" alt="">
+									<span class="fallback">N</span>
+								</span>
+								<span class="name">N.AI - Stories</span>
+							</a>
+							<label class="check-wrap" title="Include N.AI - Stories in Google searches">
+								<input class="site-check" type="checkbox" data-domain="novelai.net" data-id="https://novelai.net/stories" aria-label="Search N.AI - Stories with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://docs.comfy.org/">
+								<span class="logo">
+									<img src="img/comfy.png" alt="">
+									<span class="fallback">C</span>
+								</span>
+								<span class="name">Comfy Docs</span>
+							</a>
+							<label class="check-wrap" title="Include Comfy in Google searches">
+								<input class="site-check" type="checkbox" data-domain="comfy.org" data-id="https://comfy.org" aria-label="Search Comfy with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://civitai.com/">
+								<span class="logo">
+									<img src="img/civitai.png" alt="">
+									<span class="fallback">C</span>
+								</span>
+								<span class="name">Civitai</span>
+							</a>
+							<label class="check-wrap" title="Include Civitai in Google searches">
+								<input class="site-check" type="checkbox" data-domain="civitai.com" data-id="https://civitai.com/" aria-label="Search Civitai with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://huggingface.co/">
+								<span class="logo">
+									<img src="img/huggingface.png" alt="">
+									<span class="fallback">H</span>
+								</span>
+								<span class="name">Hugging Face</span>
+							</a>
+							<label class="check-wrap" title="Include Hugging Face in Google searches">
+								<input class="site-check" type="checkbox" data-domain="huggingface.co" data-id="https://huggingface.co/" aria-label="Search Hugging Face with Google">
+							</label>
+						</div>
+
+
+					</div>
+				</section>
+
+				<!-- Linux -->
+				<section class="group" style="--accent: #acccff" aria-labelledby="linux" data-sticker="♡">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">🐧</span>
+						<h2 id="linux">Linux</h2>
+						<span class="count">02</span>
+					</div>
+
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://bbs.archlinux.org/">
+								<span class="logo">
+									<img src="img/arch.png" alt="">
+									<span class="fallback">A</span>
+								</span>
+								<span class="name">Arch forums</span>
+							</a>
+							<label class="check-wrap" title="Include Arch forums in Google searches">
+								<input class="site-check" type="checkbox" data-domain="bbs.archlinux.org" data-id="https://bbs.archlinux.org/" aria-label="Search Arch forums with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://askubuntu.com/">
+								<span class="logo">
+									<img src="img/ubuntu.png" alt="">
+									<span class="fallback">U</span>
+								</span>
+								<span class="name">Ubuntu forums</span>
+							</a>
+							<label class="check-wrap" title="Include Ubuntu forums in Google searches">
+								<input class="site-check" type="checkbox" data-domain="askubuntu.com" data-id="https://askubuntu.com/" aria-label="Search Ubuntu forums with Google">
+							</label>
+						</div>
+
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://i3wm.org/docs/">
+								<span class="logo">
+									<img src="img/i3wm.png" alt="">
+									<span class="fallback">i</span>
+								</span>
+								<span class="name">i3</span>
+							</a>
+							<label class="check-wrap" title="Include i3 in Google searches">
+								<input class="site-check" type="checkbox" data-domain="i3wm.org" data-id="https://i3wm.org/" aria-label="Search i3 with Google">
+							</label>
+						</div>
+
+
+					</div>
+				</section>
+
+				<!-- Server -->
+				<section class="group" style="--accent: #e9d48f" aria-labelledby="server" data-sticker="♡">
+					<div class="group-heading">
+						<span class="symbol" aria-hidden="true">🗄️</span>
+						<h2 id="server">Server</h2>
+						<span class="count">02</span>
+					</div>
+
+					<div class="links">
+						<div class="shortcut">
+							<a class="shortcut-link" href="https://www.vultr.com">
+								<span class="logo">
+									<img src="img/vultr.png" alt="">
+									<span class="fallback">V</span>
+								</span>
+								<span class="name">Vultr</span>
+							</a>
+							<label class="check-wrap" title="Include Vultr in Google searches">
+								<input class="site-check" type="checkbox" data-domain="www.vultr.com" data-id="https://www.vultr.com/" aria-label="Search Vultr with Google">
+							</label>
+						</div>
+
+
+					</div>
+				</section>
+
+			</main>
+		</div>
+
+		<script>
+			'use strict';
+
+			// ==========================================================
+			// 1. Elements and saved settings
+			// ==========================================================
+
+			const groups = [...document.querySelectorAll('.board > .group')];
+			const shortcutLinks = [...document.querySelectorAll('.shortcut-link')];
+			const siteChecks = [...document.querySelectorAll('.site-check')];
+			const viewButtons = [...document.querySelectorAll('.view-button')];
+
+			const board = document.querySelector('.board');
+			const shell = document.querySelector('.shell');
+			const searchForm = document.getElementById('google-search');
+			const searchInput = document.getElementById('google-query');
+			const searchScope = document.getElementById('search-scope');
+			const clearFilters = document.getElementById('clear-filters');
+
+			const LAYOUT_STORAGE_KEY = 'higitsune-layout-v1';
+			const SEARCH_STORAGE_KEY = 'higitsune-selected-links-v1';
+
+
+			// ==========================================================
+			// 2. Link labels, counters, and missing-image fallbacks
+			// ==========================================================
+
+			function updateCounters() {
+				const shortcutCount = groups.reduce((total, group) => {
+					const count = group.querySelectorAll('.shortcut').length;
+					const counter = group.querySelector('.count');
+
+					if (counter) {
+						counter.textContent = String(count).padStart(2, '0');
+					}
+
+					return total + count;
+				}, 0);
+
+				document.getElementById('shortcuts-count').textContent = shortcutCount;
+				document.getElementById('categories-count').textContent = String(groups.length).padStart(2, '0');
+				document.getElementById('summary').setAttribute(
+					'aria-label',
+					`${groups.length} categories and ${shortcutCount} shortcuts`
+				);
+			}
+
+			function prepareLinks() {
+				shortcutLinks.forEach(link => {
+					const label = link.querySelector('.name')?.textContent?.trim() || link.href;
+					link.dataset.label = label;
+					link.setAttribute('aria-label', label);
+				});
+
+				document.querySelectorAll('.logo img').forEach(image => {
+					const showFallback = () => image.parentElement.classList.add('missing');
+
+					image.addEventListener('error', showFallback);
+
+					if (image.complete && image.naturalWidth === 0) {
+						showFallback();
+					}
+				});
+			}
+
+
+			// ==========================================================
+			// 3. Floating name tooltips for icon-only links
+			// ==========================================================
+
+			const tooltip = document.createElement('div');
+			tooltip.className = 'shortcut-tooltip';
+			tooltip.id = 'shortcut-tooltip';
+			tooltip.setAttribute('role', 'tooltip');
+			tooltip.hidden = true;
+			document.body.appendChild(tooltip);
+
+			let activeTooltipLink = null;
+
+			function hideTooltip() {
+				if (activeTooltipLink) {
+					activeTooltipLink.removeAttribute('aria-describedby');
+				}
+
+				activeTooltipLink = null;
+				tooltip.hidden = true;
+			}
+
+			function showTooltip(link) {
+				const isIconMode = document.documentElement.dataset.layout === 'icons';
+				const isCompactCard = link.closest('.group')?.classList.contains('compact');
+
+				if (!isIconMode && !isCompactCard) {
+					return;
+				}
+
+				if (activeTooltipLink !== link) {
+					hideTooltip();
+				}
+
+				activeTooltipLink = link;
+				tooltip.textContent = link.dataset.label;
+				tooltip.hidden = false;
+
+				const rect = link.getBoundingClientRect();
+				const tip = tooltip.getBoundingClientRect();
+				const x = Math.max(8, Math.min(innerWidth - tip.width - 8, rect.left + rect.width / 2 - tip.width / 2));
+
+				let y = rect.top - tip.height - 9;
+				const below = y < 8;
+
+				if (below) {
+					y = rect.bottom + 9;
+				}
+
+				if (y + tip.height > innerHeight - 8) {
+					y = Math.max(8, innerHeight - tip.height - 8);
+				}
+
+				tooltip.dataset.placement = below ? 'below' : 'above';
+				tooltip.style.left = `${x}px`;
+				tooltip.style.top = `${y}px`;
+				link.setAttribute('aria-describedby', tooltip.id);
+			}
+
+			function attachTooltips() {
+				shortcutLinks.forEach(link => {
+					link.addEventListener('pointerenter', () => showTooltip(link));
+					link.addEventListener('pointerleave', hideTooltip);
+					link.addEventListener('focus', () => showTooltip(link));
+					link.addEventListener('blur', hideTooltip);
+				});
+
+				window.addEventListener('scroll', () => {
+					if (activeTooltipLink && document.activeElement === activeTooltipLink) {
+						showTooltip(activeTooltipLink);
+					} else {
+						hideTooltip();
+					}
+				}, true);
+			}
+
+
+			// ==========================================================
+			// 4. Space-aware category sizing
+			//
+			// CSS decides card widths and wraps the rows. JavaScript only
+			// switches link styles if those rows exceed the viewport height.
+			// ==========================================================
+
+			const number = value => Number.parseFloat(value) || 0;
+
+			function contentHeight(group) {
+				const cardStyle = getComputedStyle(group);
+				const heading = group.querySelector('.group-heading');
+				const headingStyle = getComputedStyle(heading);
+				const links = group.querySelector('.links');
+
+				return Math.ceil(
+					number(cardStyle.paddingTop) +
+					number(cardStyle.paddingBottom) +
+					number(cardStyle.borderTopWidth) +
+					number(cardStyle.borderBottomWidth) +
+					heading.getBoundingClientRect().height +
+					number(headingStyle.marginBottom) +
+					links.getBoundingClientRect().height
+				);
+			}
+
+			function getCardRows() {
+				const rows = [];
+
+				groups.forEach((group, index) => {
+					const top = group.getBoundingClientRect().top;
+					const lastRow = rows[rows.length - 1];
+
+					if (!lastRow || Math.abs(top - lastRow.top) > 2) {
+						rows.push({ top, indices: [index] });
+					} else {
+						lastRow.indices.push(index);
+					}
+				});
+
+				return rows;
+			}
+
+			function remainingBoardHeight() {
+				const viewportHeight = window.visualViewport?.height || window.innerHeight;
+				const paddingBottom = number(getComputedStyle(shell).paddingBottom);
+
+				return Math.max(0, viewportHeight - board.getBoundingClientRect().top - paddingBottom);
+			}
+
+			function measureCards(minHeightIsRequired) {
+				return groups.map(group => {
+					const content = contentHeight(group);
+
+					if (!minHeightIsRequired) {
+						return content;
+					}
+
+					return Math.max(content, number(getComputedStyle(group).minHeight));
+				});
+			}
+
+			function findCardsToShrink(rows, regularHeights, smallHeights) {
+				const small = groups.map(() => false);
+				const gap = number(getComputedStyle(board).rowGap);
+				const heightOfRow = row => Math.max(
+					...row.indices.map(index => small[index] ? smallHeights[index] : regularHeights[index])
+				);
+				const totalHeight = () => rows.reduce(
+					(total, row) => total + heightOfRow(row),
+					gap * (rows.length - 1)
+				);
+
+				// Shrink one card at a time. Choose whichever helps its row most;
+				// tied cards prefer the taller one. If everything is already tiny,
+				// normal scrolling remains possible instead of hiding links.
+				for (let step = 0; step < groups.length && totalHeight() > remainingBoardHeight() + 1; step++) {
+					let best = -1;
+					let bestSaving = -1;
+					let tallest = -1;
+
+					for (const row of rows) {
+						const before = heightOfRow(row);
+
+						for (const index of row.indices) {
+							if (small[index] || smallHeights[index] >= regularHeights[index] - 1) {
+								continue;
+							}
+
+							small[index] = true;
+							const saving = before - heightOfRow(row);
+							small[index] = false;
+
+							const savesMore = saving > bestSaving + .1;
+							const tallerOnTie = Math.abs(saving - bestSaving) <= .1 && regularHeights[index] > tallest;
+
+							if (savesMore || tallerOnTie) {
+								best = index;
+								bestSaving = saving;
+								tallest = regularHeights[index];
+							}
+						}
+					}
+
+					if (best < 0) {
+						break;
+					}
+
+					small[best] = true;
+				}
+
+				return small;
+			}
+
+			function fitShortcuts() {
+				hideTooltip();
+
+				if (!groups.length) {
+					return;
+				}
+
+				const allIcons = document.documentElement.dataset.layout === 'icons';
+				const smallClass = allIcons ? 'mini-icons' : 'compact';
+
+				groups.forEach(group => group.classList.remove('compact', 'mini-icons'));
+
+				const rows = getCardRows();
+				const regularHeights = measureCards(allIcons);
+
+				groups.forEach(group => group.classList.add(smallClass));
+				const smallHeights = measureCards(allIcons);
+				groups.forEach(group => group.classList.remove(smallClass));
+
+				const compactCards = findCardsToShrink(rows, regularHeights, smallHeights);
+
+				groups.forEach((group, index) => {
+					group.classList.toggle(smallClass, compactCards[index]);
+				});
+			}
+
+			let fitIsScheduled = false;
+
+			function scheduleFit() {
+				if (fitIsScheduled) {
+					return;
+				}
+
+				fitIsScheduled = true;
+
+				requestAnimationFrame(() => {
+					fitIsScheduled = false;
+					fitShortcuts();
+				});
+			}
+
+
+			// ==========================================================
+			// 5. Listed / All icons mode switch
+			// ==========================================================
+
+			function setView(mode) {
+				const view = mode === 'icons' ? 'icons' : 'listed';
+				document.documentElement.dataset.layout = view;
+
+				viewButtons.forEach(button => {
+					button.setAttribute('aria-pressed', String(button.dataset.view === view));
+				});
+
+				hideTooltip();
+				scheduleFit();
+
+				try {
+					localStorage.setItem(LAYOUT_STORAGE_KEY, view);
+				} catch (_) {
+					// Storage is optional, e.g. when opening a local file.
+				}
+			}
+
+			function initializeView() {
+				let savedView = 'listed';
+
+				try {
+					if (localStorage.getItem(LAYOUT_STORAGE_KEY) === 'icons') {
+						savedView = 'icons';
+					}
+				} catch (_) {
+					// Fall back to listed if storage is unavailable.
+				}
+
+				viewButtons.forEach(button => {
+					button.addEventListener('click', () => setView(button.dataset.view));
+				});
+
+				setView(savedView);
+				window.addEventListener('resize', scheduleFit);
+				window.addEventListener('pageshow', scheduleFit);
+
+				if (document.fonts?.ready) {
+					document.fonts.ready.then(scheduleFit);
+				}
+			}
+
+
+			// ==========================================================
+			// 6. Google search scoped by selected websites
+			// ==========================================================
+
+			function checkedDomains() {
+				return [...new Set(
+					siteChecks.filter(box => box.checked).map(box => box.dataset.domain)
+				)];
+			}
+
+			function updateScope() {
+				const domains = checkedDomains();
+				const checkedCount = siteChecks.filter(box => box.checked).length;
+
+				searchScope.textContent = domains.length
+					? `${domains.length} site${domains.length === 1 ? '' : 's'}`
+					: 'All web';
+
+				searchScope.title = domains.length
+					? `Search only: ${domains.join(', ')}`
+					: 'No sites checked — search all Google';
+
+				clearFilters.hidden = checkedCount === 0;
+			}
+
+			function saveSelection() {
+				try {
+					const selectedIds = siteChecks.filter(box => box.checked).map(box => box.dataset.id);
+					localStorage.setItem(SEARCH_STORAGE_KEY, JSON.stringify(selectedIds));
+				} catch (_) {
+					// Site selection still works without persistent storage.
+				}
+
+				updateScope();
+			}
+
+			function makeGoogleQuery(query) {
+				const domains = checkedDomains();
+
+				if (!domains.length) {
+					return query;
+				}
+
+				return `${query} (${domains.map(domain => `site:${domain}`).join(' OR ')})`;
+			}
+
+			function initializeSearch() {
+				try {
+					const saved = JSON.parse(localStorage.getItem(SEARCH_STORAGE_KEY) || '[]');
+
+					if (Array.isArray(saved)) {
+						siteChecks.forEach(box => {
+							box.checked = saved.includes(box.dataset.id);
+						});
+					}
+				} catch (_) {
+					// Search is usable even if preferences cannot be restored.
+				}
+
+				siteChecks.forEach(box => box.addEventListener('change', saveSelection));
+
+				clearFilters.addEventListener('click', () => {
+					siteChecks.forEach(box => { box.checked = false; });
+					saveSelection();
+					searchInput.focus();
+				});
+
+				searchForm.addEventListener('submit', event => {
+					const query = searchInput.value.trim();
+
+					if (!query) {
+						event.preventDefault();
+						return;
+					}
+
+					if (!checkedDomains().length) {
+						return; // Normal Google search: handled by the HTML GET form.
+					}
+
+					event.preventDefault();
+					window.location.assign(
+						`https://www.google.com/search?q=${encodeURIComponent(makeGoogleQuery(query))}`
+					);
+				});
+
+				document.addEventListener('keydown', event => {
+					const target = event.target;
+					const editing = target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+
+					if (event.key === '/' && !editing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+						event.preventDefault();
+						searchInput.focus();
+					}
+				});
+
+				updateScope();
+			}
+
+
+			// ==========================================================
+			// 7. Start the page
+			// ==========================================================
+
+			updateCounters();
+			prepareLinks();
+			attachTooltips();
+			initializeSearch();
+			initializeView();
+		</script>
+	</body>
+</html>

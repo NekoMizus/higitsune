@@ -578,16 +578,17 @@
 
 			/* ─── 5. Search box ─── */
 			.search-form {
-				display: flex;
-				align-items: center;
-				flex: 1 1 400px;
+				flex: 1 1 360px;
 				width: 100%;
-				margin: 0 auto;
-				transition: border-color .15s, background .15s;
-				flex-basis: 360px;
-				border-color: #edd7e6;
 				min-width: 180px;
 				max-width: 510px;
+				margin: 0 auto;
+			}
+
+			.search-bar {
+				display: flex;
+				align-items: center;
+				transition: border-color .15s, background .15s;
 				height: 46px;
 				border: 2px solid #f2cedf;
 				background: #fff;
@@ -597,10 +598,33 @@
 				gap: 8px;
 			}
 
-			.search-form:focus-within {
+			.search-bar:focus-within {
 				background: #fff;
 				border-color: #e3a4cb;
 				box-shadow: 0 4px 0 #f6dfe9, 0 0 0 3px #ffe4f3;
+			}
+
+			.search-engines:not([hidden]) {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 0 10px;
+				margin-top: 4px;
+				font-size: 11px;
+				font-weight: 650;
+			}
+
+			.search-engines label {
+				display: flex;
+				align-items: center;
+				gap: 3px;
+				min-height: 24px;
+				cursor: pointer;
+			}
+
+			.search-engines input {
+				margin: 0;
+				accent-color: #a95e91;
 			}
 
 			.search-icon {
@@ -608,7 +632,7 @@
 				color: #c387af;
 			}
 
-			#google-query {
+			#search-query {
 				flex: 1 1 auto;
 				min-width: 0;
 				height: 100%;
@@ -621,7 +645,7 @@
 				font-weight: 600;
 			}
 
-			#google-query::placeholder {
+			#search-query::placeholder {
 				color: #ad9ab0;
 			}
 
@@ -1115,7 +1139,7 @@
 					display: none;
 				}
 
-				.search-form {
+				.search-bar {
 					height: 41px;
 					padding-left: 12px;
 				}
@@ -1422,16 +1446,22 @@
 					</div>
 				</div>
 
-				<!-- Google search; checked shortcuts add Google site: filters. -->
-				<form class="search-form" id="google-search" action="https://www.google.com/search" method="get" role="search">
-					<svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-						<circle cx="10.8" cy="10.8" r="6.3"/>
-						<path d="m16 16 5 5"/>
-					</svg>
-					<input id="google-query" type="search" name="q" placeholder="Search Google" aria-label="Google search" autocomplete="on" required autofocus>
-					<span class="search-scope" id="search-scope" role="status" aria-live="polite" title="Check websites below to limit your search">All web</span>
-					<button class="clear-filters" type="button" id="clear-filters" title="Uncheck all sites" aria-label="Uncheck all sites" hidden>×</button>
-					<button class="search-button" type="submit" aria-label="Search Google" title="Search Google">↗</button>
+				<form class="search-form" id="web-search" action="https://www.google.com/search" method="get" role="search">
+					<div class="search-bar">
+						<svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+							<circle cx="10.8" cy="10.8" r="6.3"/>
+							<path d="m16 16 5 5"/>
+						</svg>
+						<input id="search-query" type="search" name="q" placeholder="Search Google" aria-label="Google search" autocomplete="on" required autofocus>
+						<span class="search-scope" id="search-scope" role="status" aria-live="polite" title="Check websites below to limit your search">All web</span>
+						<button class="clear-filters" type="button" id="clear-filters" title="Uncheck all sites" aria-label="Uncheck all sites" hidden>×</button>
+						<button class="search-button" type="submit" aria-label="Search Google" title="Search Google">↗</button>
+					</div>
+					<div class="search-engines" role="radiogroup" aria-label="Search engine" hidden>
+						<label><input type="radio" name="engine" value="Google" checked> Google</label>
+						<label><input type="radio" name="engine" value="DuckDuckGo"> DuckDuckGo</label>
+						<label><input type="radio" name="engine" value="YouTube"> YouTube</label>
+					</div>
 				</form>
 
 				<div class="view-toggle" role="group" aria-label="Link display mode">
@@ -1466,8 +1496,8 @@
 								</span>
 								<span class="name">Mastodon</span>
 							</a>
-							<label class="check-wrap" title="Include Twitter in Google searches">
-								<input class="site-check" type="checkbox" data-domain="social.nekomizu.moe" data-id="https://social.nekomizu.moe" aria-label="Search Neko Mizu Mastodon server with Google">
+							<label class="check-wrap" title="Include Twitter in web searches">
+								<input class="site-check" type="checkbox" data-domain="social.nekomizu.moe" data-id="https://social.nekomizu.moe" aria-label="Include Neko Mizu Mastodon server in web searches">
 							</label>
 						</div>
 
@@ -1479,8 +1509,8 @@
 								</span>
 								<span class="name">Twitter</span>
 							</a>
-							<label class="check-wrap" title="Include Twitter in Google searches">
-								<input class="site-check" type="checkbox" data-domain="x.com" data-id="https://x.com" aria-label="Search Twitter with Google">
+							<label class="check-wrap" title="Include Twitter in web searches">
+								<input class="site-check" type="checkbox" data-domain="x.com" data-id="https://x.com" aria-label="Include Twitter in web searches">
 							</label>
 						</div>
 
@@ -1492,8 +1522,8 @@
 								</span>
 								<span class="name">YouTube</span>
 							</a>
-							<label class="check-wrap" title="Include YouTube in Google searches">
-								<input class="site-check" type="checkbox" data-domain="youtube.com" data-id="https://youtube.com" aria-label="Search YouTube with Google">
+							<label class="check-wrap" title="Include YouTube in web searches">
+								<input class="site-check" type="checkbox" data-domain="youtube.com" data-id="https://youtube.com" aria-label="Include YouTube in web searches">
 							</label>
 						</div>
 
@@ -1505,8 +1535,8 @@
 								</span>
 								<span class="name">Reddit</span>
 							</a>
-							<label class="check-wrap" title="Include Reddit in Google searches">
-								<input class="site-check" type="checkbox" data-domain="reddit.com" data-id="https://reddit.com" aria-label="Search Reddit with Google">
+							<label class="check-wrap" title="Include Reddit in web searches">
+								<input class="site-check" type="checkbox" data-domain="reddit.com" data-id="https://reddit.com" aria-label="Include Reddit in web searches">
 							</label>
 						</div>
 
@@ -1530,8 +1560,8 @@
 								</span>
 								<span class="name">GitHub</span>
 							</a>
-							<label class="check-wrap" title="Include GitHub in Google searches">
-								<input class="site-check" type="checkbox" data-domain="github.com" data-id="https://github.com/" aria-label="Search GitHub with Google">
+							<label class="check-wrap" title="Include GitHub in web searches">
+								<input class="site-check" type="checkbox" data-domain="github.com" data-id="https://github.com/" aria-label="Include GitHub in web searches">
 							</label>
 						</div>
 						<div class="shortcut">
@@ -1542,8 +1572,8 @@
 								</span>
 								<span class="name">StackOverflow</span>
 							</a>
-							<label class="check-wrap" title="Include StackOverflow in Google searches">
-								<input class="site-check" type="checkbox" data-domain="stackoverflow.com" data-id="https://stackoverflow.com/" aria-label="Search StackOverflow with Google">
+							<label class="check-wrap" title="Include StackOverflow in web searches">
+								<input class="site-check" type="checkbox" data-domain="stackoverflow.com" data-id="https://stackoverflow.com/" aria-label="Include StackOverflow in web searches">
 							</label>
 						</div>
 					</div>
@@ -1566,8 +1596,8 @@
 								</span>
 								<span class="name">Gelbooru</span>
 							</a>
-							<label class="check-wrap" title="Include Gelbooru in Google searches">
-								<input class="site-check" type="checkbox" data-domain="gelbooru.com" data-id="https://gelbooru.com/" aria-label="Search Gelbooru with Google">
+							<label class="check-wrap" title="Include Gelbooru in web searches">
+								<input class="site-check" type="checkbox" data-domain="gelbooru.com" data-id="https://gelbooru.com/" aria-label="Include Gelbooru in web searches">
 							</label>
 						</div>
 
@@ -1579,8 +1609,8 @@
 								</span>
 								<span class="name">IQDB</span>
 							</a>
-							<label class="check-wrap" title="Include IQDB in Google searches">
-								<input class="site-check" type="checkbox" data-domain="iqdb.org" data-id="https://iqdb.org/" aria-label="Search IQDB with Google">
+							<label class="check-wrap" title="Include IQDB in web searches">
+								<input class="site-check" type="checkbox" data-domain="iqdb.org" data-id="https://iqdb.org/" aria-label="Include IQDB in web searches">
 							</label>
 						</div>
 
@@ -1592,8 +1622,8 @@
 								</span>
 								<span class="name">DeviantArt</span>
 							</a>
-							<label class="check-wrap" title="Include DeviantArt in Google searches">
-								<input class="site-check" type="checkbox" data-domain="deviantart.com" data-id="https://deviantart.com/" aria-label="Search DeviantArt with Google">
+							<label class="check-wrap" title="Include DeviantArt in web searches">
+								<input class="site-check" type="checkbox" data-domain="deviantart.com" data-id="https://deviantart.com/" aria-label="Include DeviantArt in web searches">
 							</label>
 						</div>
 
@@ -1605,8 +1635,8 @@
 								</span>
 								<span class="name">VGen</span>
 							</a>
-							<label class="check-wrap" title="Include VGen in Google searches">
-								<input class="site-check" type="checkbox" data-domain="vgen.co" data-id="https://vgen.co/" aria-label="Search VGen with Google">
+							<label class="check-wrap" title="Include VGen in web searches">
+								<input class="site-check" type="checkbox" data-domain="vgen.co" data-id="https://vgen.co/" aria-label="Include VGen in web searches">
 							</label>
 						</div>
 
@@ -1618,8 +1648,8 @@
 								</span>
 								<span class="name">Pixiv</span>
 							</a>
-							<label class="check-wrap" title="Include Pixiv in Google searches">
-								<input class="site-check" type="checkbox" data-domain="pixiv.net" data-id="https://pixiv.net/" aria-label="Search Pixiv with Google">
+							<label class="check-wrap" title="Include Pixiv in web searches">
+								<input class="site-check" type="checkbox" data-domain="pixiv.net" data-id="https://pixiv.net/" aria-label="Include Pixiv in web searches">
 							</label>
 						</div>
 
@@ -1631,8 +1661,8 @@
 								</span>
 								<span class="name">Skeb</span>
 							</a>
-							<label class="check-wrap" title="Include Skeb in Google searches">
-								<input class="site-check" type="checkbox" data-domain="skeb.jp" data-id="https://skeb.jp/" aria-label="Search Skeb with Google">
+							<label class="check-wrap" title="Include Skeb in web searches">
+								<input class="site-check" type="checkbox" data-domain="skeb.jp" data-id="https://skeb.jp/" aria-label="Include Skeb in web searches">
 							</label>
 						</div>
 
@@ -1656,8 +1686,8 @@
 								</span>
 								<span class="name">Hamuketsu</span>
 							</a>
-							<label class="check-wrap" title="Include Hamuketsu in Google searches">
-								<input class="site-check" type="checkbox" data-domain="sisters.booth.pm" data-id="https://sisters.booth.pm/" aria-label="Search Hamuketsu with Google">
+							<label class="check-wrap" title="Include Hamuketsu in web searches">
+								<input class="site-check" type="checkbox" data-domain="sisters.booth.pm" data-id="https://sisters.booth.pm/" aria-label="Include Hamuketsu in web searches">
 							</label>
 						</div>
 					</div>
@@ -1679,8 +1709,8 @@
 								</span>
 								<span class="name">MyAnimeList</span>
 							</a>
-							<label class="check-wrap" title="Include MyAnimeList in Google searches">
-								<input class="site-check" type="checkbox" data-domain="myanimelist.net" data-id="https://myanimelist.net/" aria-label="Search MyAnimeList with Google">
+							<label class="check-wrap" title="Include MyAnimeList in web searches">
+								<input class="site-check" type="checkbox" data-domain="myanimelist.net" data-id="https://myanimelist.net/" aria-label="Include MyAnimeList in web searches">
 							</label>
 						</div>
 						<div class="shortcut">
@@ -1691,8 +1721,8 @@
 								</span>
 								<span class="name">VNDB</span>
 							</a>
-							<label class="check-wrap" title="Include VNDB in Google searches">
-								<input class="site-check" type="checkbox" data-domain="vndb.org" data-id="https://vndb.org/" aria-label="Search VNDB with Google">
+							<label class="check-wrap" title="Include VNDB in web searches">
+								<input class="site-check" type="checkbox" data-domain="vndb.org" data-id="https://vndb.org/" aria-label="Include VNDB in web searches">
 							</label>
 						</div>
 						<div class="shortcut">
@@ -1703,8 +1733,8 @@
 								</span>
 								<span class="name">Nyaa</span>
 							</a>
-							<label class="check-wrap" title="Include Nyaa in Google searches">
-								<input class="site-check" type="checkbox" data-domain="nyaa.si" data-id="https://nyaa.si/" aria-label="Search Nyaa with Google">
+							<label class="check-wrap" title="Include Nyaa in web searches">
+								<input class="site-check" type="checkbox" data-domain="nyaa.si" data-id="https://nyaa.si/" aria-label="Include Nyaa in web searches">
 							</label>
 						</div>
 					</div>
@@ -1727,8 +1757,8 @@
 								</span>
 								<span class="name">ChatGPT</span>
 							</a>
-							<label class="check-wrap" title="Include ChatGPT in Google searches">
-								<input class="site-check" type="checkbox" data-domain="chatgpt.com" data-id="https://chatgpt.com/" aria-label="Search ChatGPT with Google">
+							<label class="check-wrap" title="Include ChatGPT in web searches">
+								<input class="site-check" type="checkbox" data-domain="chatgpt.com" data-id="https://chatgpt.com/" aria-label="Include ChatGPT in web searches">
 							</label>
 						</div>
 
@@ -1740,8 +1770,8 @@
 								</span>
 								<span class="name">N.AI - Image</span>
 							</a>
-							<label class="check-wrap" title="Include N.AI - Image in Google searches">
-								<input class="site-check" type="checkbox" data-domain="novelai.net" data-id="https://novelai.net/image" aria-label="Search N.AI - Image with Google">
+							<label class="check-wrap" title="Include N.AI - Image in web searches">
+								<input class="site-check" type="checkbox" data-domain="novelai.net" data-id="https://novelai.net/image" aria-label="Include N.AI - Image in web searches">
 							</label>
 						</div>
 
@@ -1753,8 +1783,8 @@
 								</span>
 								<span class="name">N.AI - Stories</span>
 							</a>
-							<label class="check-wrap" title="Include N.AI - Stories in Google searches">
-								<input class="site-check" type="checkbox" data-domain="novelai.net" data-id="https://novelai.net/stories" aria-label="Search N.AI - Stories with Google">
+							<label class="check-wrap" title="Include N.AI - Stories in web searches">
+								<input class="site-check" type="checkbox" data-domain="novelai.net" data-id="https://novelai.net/stories" aria-label="Include N.AI - Stories in web searches">
 							</label>
 						</div>
 
@@ -1766,8 +1796,8 @@
 								</span>
 								<span class="name">Comfy Docs</span>
 							</a>
-							<label class="check-wrap" title="Include Comfy in Google searches">
-								<input class="site-check" type="checkbox" data-domain="comfy.org" data-id="https://comfy.org" aria-label="Search Comfy with Google">
+							<label class="check-wrap" title="Include Comfy in web searches">
+								<input class="site-check" type="checkbox" data-domain="comfy.org" data-id="https://comfy.org" aria-label="Include Comfy in web searches">
 							</label>
 						</div>
 
@@ -1779,8 +1809,8 @@
 								</span>
 								<span class="name">Civitai</span>
 							</a>
-							<label class="check-wrap" title="Include Civitai in Google searches">
-								<input class="site-check" type="checkbox" data-domain="civitai.com" data-id="https://civitai.com/" aria-label="Search Civitai with Google">
+							<label class="check-wrap" title="Include Civitai in web searches">
+								<input class="site-check" type="checkbox" data-domain="civitai.com" data-id="https://civitai.com/" aria-label="Include Civitai in web searches">
 							</label>
 						</div>
 
@@ -1792,8 +1822,8 @@
 								</span>
 								<span class="name">Hugging Face</span>
 							</a>
-							<label class="check-wrap" title="Include Hugging Face in Google searches">
-								<input class="site-check" type="checkbox" data-domain="huggingface.co" data-id="https://huggingface.co/" aria-label="Search Hugging Face with Google">
+							<label class="check-wrap" title="Include Hugging Face in web searches">
+								<input class="site-check" type="checkbox" data-domain="huggingface.co" data-id="https://huggingface.co/" aria-label="Include Hugging Face in web searches">
 							</label>
 						</div>
 
@@ -1818,8 +1848,8 @@
 								</span>
 								<span class="name">Arch forums</span>
 							</a>
-							<label class="check-wrap" title="Include Arch forums in Google searches">
-								<input class="site-check" type="checkbox" data-domain="bbs.archlinux.org" data-id="https://bbs.archlinux.org/" aria-label="Search Arch forums with Google">
+							<label class="check-wrap" title="Include Arch forums in web searches">
+								<input class="site-check" type="checkbox" data-domain="bbs.archlinux.org" data-id="https://bbs.archlinux.org/" aria-label="Include Arch forums in web searches">
 							</label>
 						</div>
 
@@ -1831,8 +1861,8 @@
 								</span>
 								<span class="name">Ubuntu forums</span>
 							</a>
-							<label class="check-wrap" title="Include Ubuntu forums in Google searches">
-								<input class="site-check" type="checkbox" data-domain="askubuntu.com" data-id="https://askubuntu.com/" aria-label="Search Ubuntu forums with Google">
+							<label class="check-wrap" title="Include Ubuntu forums in web searches">
+								<input class="site-check" type="checkbox" data-domain="askubuntu.com" data-id="https://askubuntu.com/" aria-label="Include Ubuntu forums in web searches">
 							</label>
 						</div>
 
@@ -1844,8 +1874,8 @@
 								</span>
 								<span class="name">i3</span>
 							</a>
-							<label class="check-wrap" title="Include i3 in Google searches">
-								<input class="site-check" type="checkbox" data-domain="i3wm.org" data-id="https://i3wm.org/" aria-label="Search i3 with Google">
+							<label class="check-wrap" title="Include i3 in web searches">
+								<input class="site-check" type="checkbox" data-domain="i3wm.org" data-id="https://i3wm.org/" aria-label="Include i3 in web searches">
 							</label>
 						</div>
 
@@ -1870,8 +1900,8 @@
 								</span>
 								<span class="name">Vultr</span>
 							</a>
-							<label class="check-wrap" title="Include Vultr in Google searches">
-								<input class="site-check" type="checkbox" data-domain="www.vultr.com" data-id="https://www.vultr.com/" aria-label="Search Vultr with Google">
+							<label class="check-wrap" title="Include Vultr in web searches">
+								<input class="site-check" type="checkbox" data-domain="www.vultr.com" data-id="https://www.vultr.com/" aria-label="Include Vultr in web searches">
 							</label>
 						</div>
 
@@ -1883,8 +1913,8 @@
 								</span>
 								<span class="name">Whatbox</span>
 							</a>
-							<label class="check-wrap" title="Include Whatbox in Google searches">
-								<input class="site-check" type="checkbox" data-domain="whatbox.ca" data-id="https://whatbox.ca/manage" aria-label="Search Whatbox with Google">
+							<label class="check-wrap" title="Include Whatbox in web searches">
+								<input class="site-check" type="checkbox" data-domain="whatbox.ca" data-id="https://whatbox.ca/manage" aria-label="Include Whatbox in web searches">
 							</label>
 						</div>
 
@@ -1909,12 +1939,20 @@
 
 			const board = document.querySelector('.board');
 			const shell = document.querySelector('.shell');
-			const searchForm = document.getElementById('google-search');
-			const searchInput = document.getElementById('google-query');
+			const searchForm = document.getElementById('web-search');
+			const searchInput = document.getElementById('search-query');
+			const searchEngines = searchForm.querySelector('.search-engines');
+			const searchButton = searchForm.querySelector('.search-button');
 			const searchScope = document.getElementById('search-scope');
 			const clearFilters = document.getElementById('clear-filters');
 
 			const LAYOUT_STORAGE_KEY = 'higitsune-layout-v1';
+			const ENGINE_STORAGE_KEY = 'higitsune-search-engine-v1';
+			const searchEndpoints = {
+				Google: ['https://www.google.com/search', 'q'],
+				DuckDuckGo: ['https://duckduckgo.com/', 'q'],
+				YouTube: ['https://www.youtube.com/results', 'search_query']
+			};
 			const SEARCH_STORAGE_KEY = 'higitsune-selected-links-v1';
 
 
@@ -2242,7 +2280,7 @@
 
 
 			// ==========================================================
-			// 6. Google search scoped by selected websites
+			// 6. Search engines and site filters
 			// ==========================================================
 
 			function checkedDomains() {
@@ -2261,9 +2299,11 @@
 
 				searchScope.title = domains.length
 					? `Search only: ${domains.join(', ')}`
-					: 'No sites checked — search all Google';
+					: 'No sites checked — search the web';
 
-				clearFilters.hidden = checkedCount === 0;
+				const supportsSiteFilters = searchForm.elements.engine.value !== 'YouTube';
+				searchScope.hidden = !supportsSiteFilters;
+				clearFilters.hidden = !supportsSiteFilters || checkedCount === 0;
 			}
 
 			function saveSelection() {
@@ -2277,17 +2317,52 @@
 				updateScope();
 			}
 
-			function makeGoogleQuery(query) {
+			function makeScopedQuery(query, engine) {
 				const domains = checkedDomains();
 
 				if (!domains.length) {
 					return query;
 				}
 
+				if (engine === 'DuckDuckGo' && domains.length === 1) {
+					return `${query} site:${domains[0]}`;
+				}
+
 				return `${query} (${domains.map(domain => `site:${domain}`).join(' OR ')})`;
 			}
 
+			function updateSearchEngine() {
+				const engine = searchForm.elements.engine.value;
+				const label = `Search ${engine}`;
+				searchInput.placeholder = label;
+				searchInput.setAttribute('aria-label', label);
+				searchButton.setAttribute('aria-label', label);
+				searchButton.title = label;
+				updateScope();
+			}
+
 			function initializeSearch() {
+				const engineOptions = searchForm.elements.engine;
+				engineOptions.value = 'Google';
+				try {
+					const savedEngine = localStorage.getItem(ENGINE_STORAGE_KEY);
+					if (Object.hasOwn(searchEndpoints, savedEngine)) {
+						engineOptions.value = savedEngine;
+					}
+				} catch (_) {
+					// Google remains selected when storage is unavailable.
+				}
+
+				searchEngines.addEventListener('change', () => {
+					try {
+						localStorage.setItem(ENGINE_STORAGE_KEY, engineOptions.value);
+					} catch (_) {
+						// The selected engine still works without persistent storage.
+					}
+					updateSearchEngine();
+				});
+				searchEngines.hidden = false;
+
 				try {
 					const saved = JSON.parse(localStorage.getItem(SEARCH_STORAGE_KEY) || '[]');
 
@@ -2316,14 +2391,12 @@
 						return;
 					}
 
-					if (!checkedDomains().length) {
-						return; // Normal Google search: handled by the HTML GET form.
-					}
-
 					event.preventDefault();
-					window.location.assign(
-						`https://www.google.com/search?q=${encodeURIComponent(makeGoogleQuery(query))}`
-					);
+					const engine = engineOptions.value;
+					const [endpoint, parameter] = searchEndpoints[engine];
+					const url = new URL(endpoint);
+					url.searchParams.set(parameter, engine === 'YouTube' ? query : makeScopedQuery(query, engine));
+					window.location.assign(url.href);
 				});
 
 				document.addEventListener('keydown', event => {
@@ -2336,7 +2409,7 @@
 					}
 				});
 
-				updateScope();
+				updateSearchEngine();
 			}
 
 
